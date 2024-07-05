@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { TextInput, Text, View, StyleSheet } from 'react-native';
+import { TextInput, Text, View } from 'react-native';
 
 const Input = () => {
   const [text, setText] = useState('');
-  const [isFocused, setIsFocused] = useState(true);
   const [showThankYou, setShowThankYou] = useState(false);
 
   return (
