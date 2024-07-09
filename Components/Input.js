@@ -1,20 +1,27 @@
-import { TextInput, Text } from "react-native";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { TextInput, Text, View } from 'react-native';
 
 const Input = () => {
   const [text, setText] = useState('');
+  const [showThankYou, setShowThankYou] = useState(false);
 
-    return (
-        <>
-        <TextInput 
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            placeholder='Type here to translate!'
-            onChangeText={text => {setText(text)}}
-            value={text}
-        ></TextInput>
-        <Text>{text}</Text>
-        </>
-    )
-}
+  return (
+    <View >
+      <TextInput
+        placeholder="Type here to translate!"
+        onChangeText={(text) => {
+          setText(text);
+          setShowThankYou(false);
+        }}
+        value={text}
+        autoFocus={true}
+        onBlur={() => setShowThankYou(true)}
+        onFocus={() => setShowThankYou(false)}
+      />
+      {showThankYou && <Text>Thank you</Text>}
+    </View>
+  );
+};
+
 
 export default Input;
