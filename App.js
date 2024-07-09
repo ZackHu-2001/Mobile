@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Modal } from 'react-native';
+import { StyleSheet, Text, View, Button, Modal, SafeAreaView } from 'react-native';
 import Input from './Components/Input';
 import Header from './Components/Header';
 import React, { useState } from 'react';
@@ -19,17 +19,21 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Header name={appName} theme='dark' />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.topContainer}>
+        <Header name={appName} theme='dark' />
+        <Button title='Add a Goal' onPress={() => {
+          setShowModal(true);
+        }} />
+      </View>
+
       <Input handleInputData={handleInputData} modalVisibility={showModal} />
 
+      <View style={styles.bottomContainer}>
+        <Text>{text}</Text>
+      </View>
       <StatusBar style="auto" />
-      <Button title="Confirm" onPress={handleConfirm} />
-      <Text>{text}</Text>
-      <Button title='Add a Goal' onPress={() => {
-        setShowModal(true);
-      }} />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -37,7 +41,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  topContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  bottomContainer: {
+    flex: 4,
+    backgroundColor: '#fdf',
+    alignItems: 'center',
+  }
 });
