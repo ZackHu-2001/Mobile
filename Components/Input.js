@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, Image, View, Modal, Button, StyleSheet } from 'react-native';
 
-const Input = ({ handleInputData, handleCancel, modalVisibility }) => {
+const Input = ({ handleConfirm, handleCancel, modalVisibility }) => {
   const [text, setText] = useState('');
 
   return (
@@ -15,13 +15,11 @@ const Input = ({ handleInputData, handleCancel, modalVisibility }) => {
             placeholder="Type something!"
             onChangeText={(text) => {
               setText(text);
-              // setShowThankYou(false);
             }}
             value={text}
             autoFocus={true}
             style={styles.input}
           />
-          {/* {showThankYou && <Text>Thank you</Text>} */}
           <View style={styles.buttonContainer}>
             <Button
               title='Cancel'
@@ -34,7 +32,7 @@ const Input = ({ handleInputData, handleCancel, modalVisibility }) => {
               title="Confirm"
               disabled={!text}
               onPress={() => {
-                handleInputData(text);
+                handleConfirm(text);
                 setText('');
               }}
             />

@@ -27,7 +27,7 @@ export default function App() {
         }} />
       </View>
 
-      <Input handleInputData={handleConfirm} handleCancel={handleCancel} modalVisibility={showModal} />
+      <Input handleConfirm={handleConfirm} handleCancel={handleCancel} modalVisibility={showModal} />
 
       <View style={styles.bottomContainer}>
         <View style={styles.textContainer}>
