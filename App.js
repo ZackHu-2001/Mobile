@@ -9,6 +9,12 @@ export default function App() {
   const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  const [golas, setGoals] = useState([]);
+
+  const handleInputData = (data) {
+    const newGola = {}
+  }
+  
   const handleConfirm = (text) => {
     setText(text);
     setShowModal(false);
