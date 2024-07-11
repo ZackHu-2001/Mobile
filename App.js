@@ -9,12 +9,12 @@ export default function App() {
   const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  const handleConfirm = () => {
-    console.log(text);
+  const handleConfirm = (text) => {
+    setText(text);
+    setShowModal(false);
   }
 
-  const handleInputData = (text) => {
-    setText(text);
+  const handleCancel = () => {
     setShowModal(false);
   }
 
@@ -27,10 +27,12 @@ export default function App() {
         }} />
       </View>
 
-      <Input handleInputData={handleInputData} modalVisibility={showModal} />
+      <Input handleConfirm={handleConfirm} handleCancel={handleCancel} modalVisibility={showModal} />
 
       <View style={styles.bottomContainer}>
-        <Text>{text}</Text>
+        <View style={styles.textContainer}>
+          <Text >{text}</Text>
+        </View>
       </View>
       <StatusBar style="auto" />
     </SafeAreaView>
@@ -53,5 +55,10 @@ const styles = StyleSheet.create({
     flex: 4,
     backgroundColor: '#fdf',
     alignItems: 'center',
+  },
+  textContainer: {
+    borderRadius: 5,
+    backgroundColor: '#cfcfcf',
+    padding: 5
   }
 });
