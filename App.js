@@ -27,6 +27,10 @@ export default function App() {
     setShowModal(false);
   }
 
+  const removeItem = (id) => {
+    setGoals(goals.filter((goal) => goal.id !== id));
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
@@ -40,8 +44,8 @@ export default function App() {
 
       <View style={styles.bottomContainer}>
 
-        <FlatList data={goals} renderItem={({item}) => {
-          return <GoalItem goal={item} />
+        <FlatList data={goals} renderItem={({ item }) => {
+          return <GoalItem goal={item} removeItem={removeItem} />
         }}>
         </FlatList>
       </View>
