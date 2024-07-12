@@ -3,10 +3,10 @@ import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, FlatList } fr
 import Input from './Components/Input';
 import Header from './Components/Header';
 import React, { useState } from 'react';
+import GoalItem from './Components/GoalItem';
 
 export default function App() {
   const appName = 'Summer 2024 class';
-  // const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
 
   const [goals, setGoals] = useState([]);
@@ -20,7 +20,6 @@ export default function App() {
   }
 
   const handleConfirm = () => {
-    // setText(text);
     setShowModal(false);
   }
 
@@ -42,9 +41,7 @@ export default function App() {
       <View style={styles.bottomContainer}>
 
         <FlatList data={goals} renderItem={({item}) => {
-          return <View key={item.id} style={styles.textContainer}>
-            <Text >{item.text}</Text>
-          </View>
+          return <GoalItem goal={item} />
         }}>
         </FlatList>
       </View>
@@ -69,11 +66,5 @@ const styles = StyleSheet.create({
     flex: 4,
     backgroundColor: '#fdf',
     alignItems: 'center',
-  },
-  textContainer: {
-    borderRadius: 5,
-    backgroundColor: '#cfcfcf',
-    padding: 5,
-    marginTop: 10,
   }
 });
