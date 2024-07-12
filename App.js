@@ -6,17 +6,21 @@ import React, { useState } from 'react';
 
 export default function App() {
   const appName = 'Summer 2024 class';
-  const [text, setText] = useState('');
+  // const [text, setText] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  const [golas, setGoals] = useState([]);
+  const [goals, setGoals] = useState([]);
 
-  const handleInputData = (data) {
-    const newGola = {}
+  const handleInputData = (data) => {
+    const newGola = {
+      text: data,
+      id: Math.random().toString()
+    }
+    setGoals([...goals, newGola]);
   }
-  
-  const handleConfirm = (text) => {
-    setText(text);
+
+  const handleConfirm = () => {
+    // setText(text);
     setShowModal(false);
   }
 
@@ -33,12 +37,15 @@ export default function App() {
         }} />
       </View>
 
-      <Input handleConfirm={handleConfirm} handleCancel={handleCancel} modalVisibility={showModal} />
+      <Input handleInputData={handleInputData} handleConfirm={handleConfirm} handleCancel={handleCancel} modalVisibility={showModal} />
 
       <View style={styles.bottomContainer}>
-        <View style={styles.textContainer}>
-          <Text >{text}</Text>
-        </View>
+        {goals.map(goal => {
+          return <View style={styles.textContainer}>
+            <Text key={goal.id}>{goal.text}</Text>
+          </View>
+        })}
+        {/* <Text >{text}</Text> */}
       </View>
       <StatusBar style="auto" />
     </SafeAreaView>
@@ -65,6 +72,8 @@ const styles = StyleSheet.create({
   textContainer: {
     borderRadius: 5,
     backgroundColor: '#cfcfcf',
-    padding: 5
+    padding: 5,
+    marginTop: 10,
+    
   }
 });
