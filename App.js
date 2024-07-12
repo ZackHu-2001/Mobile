@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, Modal, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView } from 'react-native';
 import Input from './Components/Input';
 import Header from './Components/Header';
 import React, { useState } from 'react';
@@ -40,12 +40,15 @@ export default function App() {
       <Input handleInputData={handleInputData} handleConfirm={handleConfirm} handleCancel={handleCancel} modalVisibility={showModal} />
 
       <View style={styles.bottomContainer}>
-        {goals.map(goal => {
-          return <View style={styles.textContainer}>
-            <Text key={goal.id}>{goal.text}</Text>
-          </View>
-        })}
-        {/* <Text >{text}</Text> */}
+
+        <ScrollView contentContainerStyle>
+
+          {goals.map(goal => {
+            return <View key={goal.id} style={styles.textContainer}>
+              <Text >{goal.text}</Text>
+            </View>
+          })}
+        </ScrollView>
       </View>
       <StatusBar style="auto" />
     </SafeAreaView>
@@ -74,6 +77,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#cfcfcf',
     padding: 5,
     marginTop: 10,
-    
   }
 });
