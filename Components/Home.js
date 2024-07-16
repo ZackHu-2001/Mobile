@@ -31,9 +31,8 @@ export default function Home({ route, navigation }) {
         setGoals(goals.filter((goal) => goal.id !== id));
     }
 
-    const handlePressGoal = () => {
-        console.log('pressed');
-        navigation.navigate('GoalDetails');
+    const handlePressGoal = (goal) => {
+        navigation.navigate('GoalDetails', { goalObj: goal });
     }
 
     return (
