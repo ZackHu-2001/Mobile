@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, Image, View, Modal, Button, StyleSheet } from 'react-native';
 
-const Input = ({ handleConfirm, handleCancel, modalVisibility }) => {
+const Input = ({ handleInputData, handleConfirm, handleCancel, modalVisibility }) => {
   const [text, setText] = useState('');
 
   return (
@@ -32,7 +32,8 @@ const Input = ({ handleConfirm, handleCancel, modalVisibility }) => {
               title="Confirm"
               disabled={!text}
               onPress={() => {
-                handleConfirm(text);
+                handleConfirm();
+                handleInputData(text);
                 setText('');
               }}
             />
