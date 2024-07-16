@@ -5,34 +5,25 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
+const headerStyle = {
+  backgroundColor: 'purple',
+  headerTintColor: 'white'
+}
+
 export default function App() {
   return <NavigationContainer>
     <Stack.Navigator>
       <Stack.Screen name='Home' component={Home} options={{
         title: 'All My Goals',
-        headerStyle: {
-          backgroundColor: 'purple',
-          headerTintColor: 'white'
-        }
+        headerStyle: headerStyle
       }} />
       <Stack.Screen name='GoalDetails' component={GoalDetails} options={({ route, navigation }) => {
         return {
           title: route.params.goalObj.text ? route.params.goalObj.text : 'Goal Details',
-          headerStyle: {
-            backgroundColor: 'purple',
-            headerTintColor: 'white'
-          },
-          headerRight: () => (
-            <Button title="warning" />
-          )
+          headerStyle: headerStyle,
+          
         }
       }} />
     </Stack.Navigator>
   </NavigationContainer >
 }
-
-// title: 'Goal Details',
-//         headerStyle: {
-//           backgroundColor: 'purple',
-//           headerTintColor: 'white'
-//         }

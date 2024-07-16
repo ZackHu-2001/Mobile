@@ -1,16 +1,14 @@
 import { View, Text, StyleSheet, Button } from 'react-native';
 
-const GoalItem = ({ goal, removeItem, pressHandler }) => {
-    function goalPressed(goal) {
-        pressHandler(goal)
-    }
+const GoalItem = ({ goal, navigation, removeItem }) => {
+    
     return <View key={goal.id} style={styles.textContainer}>
         <Text style={{ marginRight: 10 }}>{goal.text}</Text>
         <View style={styles.Button}>
             <Button title='X' onPress={() => removeItem(goal.id)} />
         </View>
         <View style={styles.Button}>
-            <Button title='i' onPress={() => goalPressed(goal)} />
+            <Button title='i' onPress={() => navigation.navigate('GoalDetails', {goalObj: goal})} />
         </View>
     </View>
 }
