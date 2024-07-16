@@ -31,6 +31,11 @@ export default function Home({ route, navigation }) {
         setGoals(goals.filter((goal) => goal.id !== id));
     }
 
+    const handlePressGoal = () => {
+        console.log('pressed');
+        navigation.navigate('GoalDetails');
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topContainer}>
@@ -45,7 +50,7 @@ export default function Home({ route, navigation }) {
             <View style={styles.bottomContainer}>
 
                 <FlatList data={goals} renderItem={({ item }) => {
-                    return <GoalItem goal={item} removeItem={removeItem} />
+                    return <GoalItem goal={item} removeItem={removeItem} pressHandler={handlePressGoal}/>
                 }}>
                 </FlatList>
             </View>
