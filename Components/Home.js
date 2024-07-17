@@ -45,7 +45,7 @@ export default function Home({ route, navigation }) {
             <View style={styles.bottomContainer}>
 
                 <FlatList data={goals} renderItem={({ item }) => {
-                    return <GoalItem goal={item} removeItem={removeItem} navigation={navigation} />
+                    return <GoalItem goal={item} removeItem={removeItem} />
                 }}>
                 </FlatList>
             </View>

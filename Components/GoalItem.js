@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const GoalItem = ({ goal, navigation, removeItem }) => {
+const GoalItem = ({ goal, removeItem }) => {
+    const navigation = useNavigation();
     
     return <View key={goal.id} style={styles.textContainer}>
         <Text style={{ marginRight: 10 }}>{goal.text}</Text>
