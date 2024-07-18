@@ -20,7 +20,7 @@ export default function App() {
       <Stack.Screen name='GoalDetails' component={GoalDetails} options={({ route, navigation }) => {
         return {
           title: route.params.goalObj.text ? route.params.goalObj.text : 'Goal Details',
-          headerStyle: headerStyle,
+          headerStyle:  headerStyle,
           
         }
       }} />
