@@ -1,9 +1,14 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { Button, Text, View, StyleSheet } from 'react-native';
+import { updateIswarning } from '../Firebase/firestoreHelper';
 
 const GoalDetails = ({ route, navigation }) => {
     const goalObj = route.params?.goalObj;
     const [isWarning, setIsWarning] = useState(false);
+
+    useEffect(() => {
+        setIsWarning(route.params?.goalObj.isWarning);
+    }, [route])
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -19,7 +24,10 @@ const GoalDetails = ({ route, navigation }) => {
     }, [navigation, isWarning]);
 
     const handlePress = () => {
-        setIsWarning(true);
+        setIsWarning(!isWarning);
+        goalObj.isWarning = !isWarning;
+        updateIswarning(goalObj.isWarning);
+        // updateDB(goalObj.id, goalObj);
     };
 
     return (
