@@ -65,7 +65,7 @@ export default function Home({ route, navigation }) {
                 <FlatList data={goals} renderItem={({ item }) => {
                     return <GoalItem goal={item} removeItem={() => {
                         removeItem(item.id)
-                    }} pressHandler={handlePressGoal}/>
+                    }} />
                 }}>
                 </FlatList>
             </View>
