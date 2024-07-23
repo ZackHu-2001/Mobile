@@ -1,5 +1,5 @@
 import { db } from "./firebaseSetup";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, deleteDoc, doc } from "firebase/firestore";
 
 export async function writeToDB(goal) {
     try {
