@@ -1,18 +1,40 @@
-import React from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { Button, Text, View, StyleSheet } from 'react-native';
 
 const GoalDetails = ({ route, navigation }) => {
-    const { goalObj } = route.params;
-    console.log(route.params);
+    const goalObj = route.params?.goalObj;
+    const [isWarning, setIsWarning] = useState(false);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: isWarning ? 'Warning!' : (goalObj ? goalObj.text : 'Goal Details'),
+            headerRight: () => (
+                <Button
+                    onPress={handlePress}
+                    title="Warning"
+                    color="#000"
+                />
+            ),
+        });
+    }, [navigation, isWarning]);
+
+    const handlePress = () => {
+        setIsWarning(true);
+    };
+
     return (
         <>
-            {route.params ? (< View style={styles.container} >
-                <Text style={styles.title}>{goalObj.id}</Text>
-                <Text style={styles.description}>{goalObj.text}</Text>
-            </View>
-            ) : <Text>More Detail</Text>
-            }
-            <Button title='More Details' onPress={() => navigation.push('GoalDetails')} />
+            {goalObj ? (
+                <View style={styles.container}>
+                    <Text style={[styles.title, { color: isWarning ? 'red' : 'black' }]}>{goalObj.id}</Text>
+                    <Text style={[styles.description, { color: isWarning ? 'red' : 'black' }]}>{goalObj.text}</Text>
+                </View>
+            ) : (
+                <View style={styles.container}>
+                    <Text>More Detail</Text>
+                </View>
+            )}
+            <Button title="More Details" onPress={() => navigation.push('GoalDetails', { goalObj })} />
         </>
     );
 }

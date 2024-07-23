@@ -1,18 +1,19 @@
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, Pressable } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import PressableButton from './PressableButton';
+import { EvilIcons } from '@expo/vector-icons';
 
-const GoalItem = ({ goal, removeItem, pressHandler }) => {
-    function goalPressed(goal) {
-        pressHandler(goal)
-    }
-    return <View key={goal.id} style={styles.textContainer}>
-        <Text style={{ marginRight: 10 }}>{goal.text}</Text>
-        <View style={styles.Button}>
-            <Button title='X' onPress={() => removeItem(goal.id)} />
+const GoalItem = ({ goal, removeItem }) => {
+    const navigation = useNavigation();
+
+    return <Pressable android_ripple={{ foreground: true }} onPress={() => navigation.navigate('GoalDetails', { goalObj: goal })} >
+        <View key={goal.id} style={styles.textContainer}>
+            <Text style={{ marginRight: 10 }}>{goal.text}</Text>
+            <PressableButton pressedFunction={() => removeItem(goal.id)} componentStyle={styles.Button}>
+                <EvilIcons name="trash" size={35} color="black" />
+            </PressableButton>
         </View>
-        <View style={styles.Button}>
-            <Button title='i' onPress={() => goalPressed(goal)} />
-        </View>
-    </View>
+    </Pressable>
 }
 
 const styles = StyleSheet.create({
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     Button: {
-        backgroundColor: 'black',
+        // backgroundColor: 'black',
         color: 'white',
         borderRadius: 5,
         margin: 5,
