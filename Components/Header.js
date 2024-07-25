@@ -1,3 +1,5 @@
+import { Dimensions } from 'react-native';
+
 import { View, Text, StyleSheet } from 'react-native';
 
 const Header = ({ children, name }) => {

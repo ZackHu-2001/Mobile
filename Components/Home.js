@@ -14,8 +14,12 @@ export default function Home({ route, navigation }) {
 
     const [goals, setGoals] = useState([]);
 
-    const handleInputData = (data) => {
-        writeToDB(data);
+    const handleInputData = (goal) => {
+        const data = {
+            goal: goal,
+            isWarning: false
+        }
+        writeToDB(data, 'goals');
     }
 
     const handleConfirm = () => {

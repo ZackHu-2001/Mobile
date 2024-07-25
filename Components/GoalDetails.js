@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { Button, Text, View, StyleSheet } from 'react-native';
 import { updateIswarning } from '../Firebase/firestoreHelper';
+import GoalUser from './GoalUser';
 
 const GoalDetails = ({ route, navigation }) => {
     const goalObj = route.params?.goalObj;
@@ -42,6 +43,7 @@ const GoalDetails = ({ route, navigation }) => {
                     <Text>More Detail</Text>
                 </View>
             )}
+            <GoalUser id={goalObj.id} />
             <Button title="More Details" onPress={() => navigation.push('GoalDetails', { goalObj })} />
         </>
     );
