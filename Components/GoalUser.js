@@ -8,14 +8,16 @@ const GoalUser = ({ id }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = getAllDocs(`goals/${id}/users`);
-                console.log(data)
+                const data = await getAllDocs(`goals/${id}/users`);
                 if (data.length > 0) {
                     setUsers(data);
                     return;
                 }
 
                 const reponse = await fetch('https://jsonplaceholder.typicode.com/users');
+                if (!reponse.ok) {
+                    throw new Error('The request was not successful');
+                }
                 const res = await reponse.json();
                 setUsers(res);
                 res.forEach(element => {
