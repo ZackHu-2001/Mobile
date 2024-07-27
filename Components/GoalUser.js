@@ -31,9 +31,13 @@ const GoalUser = ({ id }) => {
     }, [])
 
     return (
-        <FlatList data={users}
-            renderItem={({ item }) => <Text>{item.name}</Text>}
-            keyExtractor={item => item.id} />
+        <>
+            <FlatList data={users}
+                renderItem={({ item }) => <Text>{item.name}</Text>}
+                keyExtractor={item => item.id} />
+            <Button title="Add User" onPress={() => {} } />
+        </>
+
     );
 }
 
