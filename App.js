@@ -21,7 +21,6 @@ export default function App() {
         return {
           title: route.params.goalObj.text ? route.params.goalObj.text : 'Goal Details',
           headerStyle:  headerStyle,
-          
         }
       }} />
     </Stack.Navigator>
