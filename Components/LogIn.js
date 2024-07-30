@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../Firebase/firebaseSetup';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -32,7 +34,24 @@ const LoginScreen = ({ navigation }) => {
                 />
             </View>
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                if (!email || !password) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        // Signed in
+                        const user = userCredential.user;
+                        console.log(user);
+                        // navigation.replace('Home');
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        alert(errorMessage);
+                    });
+            }}>
                 <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
 

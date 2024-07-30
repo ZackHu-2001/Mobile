@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { auth } from '../Firebase/firebaseSetup';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const SignupScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -45,7 +47,29 @@ const SignupScreen = ({ navigation }) => {
                 />
             </View>
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => {
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                if (!email || !password) {
+                    alert('Please fill all fields');
+                    return;
+                }
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        // Signed in 
+                        const user = userCredential.user;
+                        console.log('User created:', user);
+                        // navigation.replace('Home');
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log('Error:', errorCode, errorMessage);
+                        alert(errorMessage);
+                    });
+            }}>
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
 
