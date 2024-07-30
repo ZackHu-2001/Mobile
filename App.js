@@ -2,6 +2,8 @@ import Home from "./Components/Home";
 import GoalDetails from "./Components/GoalDetails";
 import { NavigationContainer, Button } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Signup from "./Components/SignUp";
+import Login from "./Components/LogIn";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +15,8 @@ const headerStyle = {
 export default function App() {
   return <NavigationContainer>
     <Stack.Navigator>
+      <Stack.Screen name="Signup" component={Signup} />
+      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name='Home' component={Home} options={{
         title: 'All My Goals',
         headerStyle: headerStyle
