@@ -1,10 +1,27 @@
 // Profile.js
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { auth } from '../Firebase/firebaseSetup';
+import { signOut } from 'firebase/auth';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const Profile = () => {
+const Profile = ({ navigation }) => {
     const user = auth.currentUser;
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: 'Profile',
+            headerRight: () => (
+                <MaterialIcons name="logout" size={24} color="black" onPress={() => {
+                    try {
+                        signOut(auth)
+                    } catch (error) {
+                        console.log('Error signing out: ', error);
+                    }
+                }} />
+            ),
+        });
+    }, [navigation])
 
     return (
         <View style={styles.container}>
