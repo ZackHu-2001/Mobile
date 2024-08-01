@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { TextInput, Image, View, Modal, Button, StyleSheet } from 'react-native';
+import ImageManager from './ImageManager';
 
 const Input = ({ handleInputData, handleConfirm, handleCancel, modalVisibility }) => {
   const [text, setText] = useState('');
+  const [imageUri, setImageUri] = useState(null);
+
+  const handleImageTaken = (uri) => {
+    setImageUri(uri);
+  };
 
   return (
     <Modal animationType="slide" visible={modalVisibility} transparent={true}>
       <View style={styles.modalBackground}>
         <View style={styles.modalContainer}>
 
-        <Image style={styles.image} source={{url: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png'}} alt="image one for toaday's goal"></Image>
+          <Image style={styles.image} source={{ url: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png' }} alt="image one for toaday's goal"></Image>
           <Image style={styles.image} source={require('../assets/image.png')} alt="image two for toaday's goal"></Image>
           <TextInput
             placeholder="Type something!"
@@ -20,6 +26,7 @@ const Input = ({ handleInputData, handleConfirm, handleCancel, modalVisibility }
             autoFocus={true}
             style={styles.input}
           />
+          <ImageManager onImageTaken={handleImageTaken} />
           <View style={styles.buttonContainer}>
             <Button
               title='Cancel'
@@ -33,7 +40,10 @@ const Input = ({ handleInputData, handleConfirm, handleCancel, modalVisibility }
               disabled={!text}
               onPress={() => {
                 handleConfirm();
-                handleInputData(text);
+                handleInputData({
+                  goal: text,
+                  imageUri: imageUri,
+                });
                 setText('');
               }}
             />
@@ -65,7 +75,7 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    
+
   },
   input: {
     width: '100%',
