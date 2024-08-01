@@ -1,9 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, SafeAreaView, ScrollView, FlatList } from 'react-native';
+import { StyleSheet, View, Button, SafeAreaView, ScrollView, FlatList } from 'react-native';
 import Input from './Input';
 import Header from './Header';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GoalItem from './GoalItem';
+import { writeToDB, deleteFromDB } from '../Firebase/firestoreHelper';
+import { auth, db } from '../Firebase/firebaseSetup';
+import { getAuth } from 'firebase/auth';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 export default function Home({ route, navigation }) {
     const appName = 'Summer 2024 class';
@@ -12,11 +16,12 @@ export default function Home({ route, navigation }) {
     const [goals, setGoals] = useState([]);
 
     const handleInputData = (data) => {
-        const newGola = {
-            text: data,
-            id: Math.random().toString()
+        const newData = {
+            text: data.goal,
+            isWarning: false,
+            imageUrl: data.imageUrl
         }
-        setGoals([...goals, newGola]);
+        writeToDB(newData, 'goals');
     }
 
     const handleConfirm = () => {
@@ -28,8 +33,80 @@ export default function Home({ route, navigation }) {
     }
 
     const removeItem = (id) => {
-        setGoals(goals.filter((goal) => goal.id !== id));
+        deleteFromDB(id, 'goals');
     }
+
+    const handlePressGoal = (goal) => {
+        navigation.navigate('GoalDetails', { goalObj: goal });
+    }
+
+    useEffect(() => {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+
+        if (currentUser) {
+            // const goalsQuery = query(
+            //     collection(database, "goals"),
+            //     where("owner", "==", currentUser.uid)
+            // );
+            const q = query(
+                collection(db, 'goals'),
+                where('owner', '==', auth.currentUser.uid)
+            );
+
+            const unsubscribe = onSnapshot(q, 
+            (querySnapshot) => {
+                const newArray = [];
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        newArray.push({ id: doc.id, ...doc.data() });
+                    });
+                    setGoals(newArray);
+                } else {
+                    setGoals([]); // Clear the goals if the snapshot is empty
+                }
+                console.log(newArray);
+            },
+            (error) => {
+                console.error('Error reading goals: ', error);
+            }
+            );
+
+            // Cleanup subscription on unmount
+            return () => unsubscribe();
+        }
+    }, []);
+
+    // useEffect(() => {
+    //     const q = query(
+    //         collection(db, 'goals'),
+    //         where('owner', '==', auth.currentUser.uid)
+    //     );
+    //     // const q = query(collection(db, "goals"), where("owner", "==", auth.currentUser.uid));
+    //     const unsubscribe = onSnapshot(
+    //         q,
+    //     (querySnapshot) => {
+    //         let newArray = [];
+    //         if (!querySnapshot.empty) {
+    //             querySnapshot.forEach((doc) => {
+    //                 newArray.push({ id: doc.id, ...doc.data() });
+    //             });
+    //             setGoals(newArray);
+    //         }
+    //     });
+    //     // const unsubscribe = onSnapshot(collection(db, "goals"), (querySnapshot) => {
+    //     //     const goals = [];
+    //     //     querySnapshot.forEach((doc) => {
+    //     //         goals.push({
+    //     //             id: doc.id,
+    //     //             text: doc.data().goal
+    //     //         })
+    //     //     });
+    //     //     setGoals(goals);
+    //     // })
+
+    //     return () => unsubscribe();
+    // }, [])
 
     return (
         <SafeAreaView style={styles.container}>
@@ -45,7 +122,9 @@ export default function Home({ route, navigation }) {
             <View style={styles.bottomContainer}>
 
                 <FlatList data={goals} renderItem={({ item }) => {
-                    return <GoalItem goal={item} removeItem={removeItem} />
+                    return <GoalItem goal={item} removeItem={() => {
+                        removeItem(item.id)
+                    }} />
                 }}>
                 </FlatList>
             </View>
