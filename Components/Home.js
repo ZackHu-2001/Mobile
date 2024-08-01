@@ -4,9 +4,10 @@ import Input from './Input';
 import Header from './Header';
 import React, { useState, useEffect } from 'react';
 import GoalItem from './GoalItem';
-import { onSnapshot, collection } from 'firebase/firestore';
 import { writeToDB, deleteFromDB } from '../Firebase/firestoreHelper';
-import { db } from '../Firebase/firebaseSetup';
+import { auth, db } from '../Firebase/firebaseSetup';
+import { getAuth } from 'firebase/auth';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 
 export default function Home({ route, navigation }) {
     const appName = 'Summer 2024 class';
@@ -16,7 +17,7 @@ export default function Home({ route, navigation }) {
 
     const handleInputData = (goal) => {
         const data = {
-            goal: goal,
+            text: goal,
             isWarning: false
         }
         writeToDB(data, 'goals');
@@ -31,7 +32,7 @@ export default function Home({ route, navigation }) {
     }
 
     const removeItem = (id) => {
-        deleteFromDB(id);
+        deleteFromDB(id, 'goals');
     }
 
     const handlePressGoal = (goal) => {
@@ -39,19 +40,72 @@ export default function Home({ route, navigation }) {
     }
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, "goals"), (querySnapshot) => {
-            const goals = [];
-            querySnapshot.forEach((doc) => {
-                goals.push({
-                    id: doc.id,
-                    text: doc.data().goal
-                })
-            });
-            setGoals(goals);
-        })
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
 
-        return () => unsubscribe();
-    }, [])
+        if (currentUser) {
+            // const goalsQuery = query(
+            //     collection(database, "goals"),
+            //     where("owner", "==", currentUser.uid)
+            // );
+            const q = query(
+                collection(db, 'goals'),
+                where('owner', '==', auth.currentUser.uid)
+            );
+
+            const unsubscribe = onSnapshot(q, 
+            (querySnapshot) => {
+                const newArray = [];
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        newArray.push({ id: doc.id, ...doc.data() });
+                    });
+                    setGoals(newArray);
+                } else {
+                    setGoals([]); // Clear the goals if the snapshot is empty
+                }
+                console.log(newArray);
+            },
+            (error) => {
+                console.error('Error reading goals: ', error);
+            }
+            );
+
+            // Cleanup subscription on unmount
+            return () => unsubscribe();
+        }
+    }, []);
+
+    // useEffect(() => {
+    //     const q = query(
+    //         collection(db, 'goals'),
+    //         where('owner', '==', auth.currentUser.uid)
+    //     );
+    //     // const q = query(collection(db, "goals"), where("owner", "==", auth.currentUser.uid));
+    //     const unsubscribe = onSnapshot(
+    //         q,
+    //     (querySnapshot) => {
+    //         let newArray = [];
+    //         if (!querySnapshot.empty) {
+    //             querySnapshot.forEach((doc) => {
+    //                 newArray.push({ id: doc.id, ...doc.data() });
+    //             });
+    //             setGoals(newArray);
+    //         }
+    //     });
+    //     // const unsubscribe = onSnapshot(collection(db, "goals"), (querySnapshot) => {
+    //     //     const goals = [];
+    //     //     querySnapshot.forEach((doc) => {
+    //     //         goals.push({
+    //     //             id: doc.id,
+    //     //             text: doc.data().goal
+    //     //         })
+    //     //     });
+    //     //     setGoals(goals);
+    //     // })
+
+    //     return () => unsubscribe();
+    // }, [])
 
     return (
         <SafeAreaView style={styles.container}>
