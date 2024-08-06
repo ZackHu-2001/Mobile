@@ -38,7 +38,6 @@ const GoalDetails = ({ route, navigation }) => {
         setIsWarning(!isWarning);
         goalObj.isWarning = !isWarning;
         updateIswarning(goalObj.isWarning);
-        // updateDB(goalObj.id, goalObj);
     };
 
     return (
