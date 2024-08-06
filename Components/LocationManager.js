@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { View, Button, Text, Alert, Image } from 'react-native';
+import { Dimensions } from 'react-native';
 
 const LocationManager = () => {
     const [location, setLocation] = useState(null);
     const [permissionStatus, setPermissionStatus] = useState(null);
     const mapsApiKey = "AIzaSyDylz4EXfCqB4riHXFWHsA2oiOnabLRx4M";
+    const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);    
 
     const verifyPermission = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -49,8 +51,8 @@ const LocationManager = () => {
                 location && (
                     <Image source={{ uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${mapsApiKey}` }} 
                     style={{
-                        width: 350,
-                        height: 350
+                        width: windowWidth,
+                        height: windowWidth
                     }}/>
                 )
             }
