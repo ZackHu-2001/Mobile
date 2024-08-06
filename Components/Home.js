@@ -5,9 +5,10 @@ import Header from './Header';
 import React, { useState, useEffect } from 'react';
 import GoalItem from './GoalItem';
 import { writeToDB, deleteFromDB } from '../Firebase/firestoreHelper';
-import { auth, db } from '../Firebase/firebaseSetup';
+import { db, storage } from '../Firebase/firebaseSetup';
 import { getAuth } from 'firebase/auth';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { ref, uploadBytesResumable } from 'firebase/storage';
 
 export default function Home({ route, navigation }) {
     const appName = 'Summer 2024 class';
@@ -15,12 +16,27 @@ export default function Home({ route, navigation }) {
 
     const [goals, setGoals] = useState([]);
 
-    const handleInputData = (data) => {
+    const handleInputData = async (data) => {
+
         const newData = {
             text: data.goal,
             isWarning: false,
-            imageUrl: data.imageUrl
+            // imageUri: data.imageUri
         }
+
+        let uri = data.imageUri;
+        try {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+
+            const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+            const imageRef = ref(storage, `images/${imageName}`);
+            const uploadResult = await uploadBytesResumable(imageRef, blob);  // Corrected variable name from imageBlob to blob
+            newData.imageUri = uploadResult.metadata.fullPath;
+        } catch (e) {
+            console.error('Error uploading image: ', e);
+        }
+
         writeToDB(newData, 'goals');
     }
 
@@ -54,22 +70,21 @@ export default function Home({ route, navigation }) {
                 where('owner', '==', auth.currentUser.uid)
             );
 
-            const unsubscribe = onSnapshot(q, 
-            (querySnapshot) => {
-                const newArray = [];
-                if (!querySnapshot.empty) {
-                    querySnapshot.forEach((doc) => {
-                        newArray.push({ id: doc.id, ...doc.data() });
-                    });
-                    setGoals(newArray);
-                } else {
-                    setGoals([]); // Clear the goals if the snapshot is empty
+            const unsubscribe = onSnapshot(q,
+                (querySnapshot) => {
+                    const newArray = [];
+                    if (!querySnapshot.empty) {
+                        querySnapshot.forEach((doc) => {
+                            newArray.push({ id: doc.id, ...doc.data() });
+                        });
+                        setGoals(newArray);
+                    } else {
+                        setGoals([]); // Clear the goals if the snapshot is empty
+                    }
+                },
+                (error) => {
+                    console.error('Error reading goals: ', error);
                 }
-                console.log(newArray);
-            },
-            (error) => {
-                console.error('Error reading goals: ', error);
-            }
             );
 
             // Cleanup subscription on unmount

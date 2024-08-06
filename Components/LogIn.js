@@ -43,8 +43,6 @@ const LoginScreen = ({ navigation }) => {
                     .then((userCredential) => {
                         // Signed in
                         const user = userCredential.user;
-                        console.log(user);
-                        // navigation.replace('Home');
                     })
                     .catch((error) => {
                         const errorCode = error.code;

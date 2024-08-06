@@ -60,8 +60,6 @@ const SignupScreen = ({ navigation }) => {
                     .then((userCredential) => {
                         // Signed in 
                         const user = userCredential.user;
-                        console.log('User created:', user);
-                        // navigation.replace('Home');
                     })
                     .catch((error) => {
                         const errorCode = error.code;

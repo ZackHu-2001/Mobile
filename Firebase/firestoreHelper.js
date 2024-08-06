@@ -1,20 +1,10 @@
 import { db } from "./firebaseSetup";
 import { collection, addDoc, deleteDoc, doc, updateDoc, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-// export async function writeToDB(data, collectionName) {
-//     // console.log(data, collectionName)
-//     try {
-//         await addDoc(collection(db, collectionName), data);
-//     }
-//     catch (err) {
-//         console.log(err)
-//     }
-// }
 
 export async function writeToDB(data, collectionName) {
     const auth = getAuth();
     const currentUser = auth.currentUser;
-    console.log(data)
     if (currentUser) {
         const dataWithOwner = { ...data, owner: currentUser.uid };
         try {
@@ -48,12 +38,9 @@ export async function updateIswarning(id, isWarning) {
 
 export async function getAllDocs(collectionName) {
     try {
-        console.log(collectionName)
         const querySnapshot = await getDocs(collection(db, collectionName));
-        // console.log('query', querySnapshot)
         let array = [];
         querySnapshot.forEach(doc => {
-            console.log(doc.data())
             array.push(doc.data());
         });
         return array;
