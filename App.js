@@ -9,6 +9,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Firebase/firebaseSetup";
 import { Ionicons } from '@expo/vector-icons';
 import Profile from "./Components/Profile";
+import Map from './Components/Map';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,6 +59,7 @@ export default function App() {
               }
             }} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="Map" component={Map} />
           </>
         ) : (
           <>
