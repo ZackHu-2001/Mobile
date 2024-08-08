@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import { View, Button, Text, Alert, Image } from 'react-native';
 import { Dimensions } from 'react-native';
-import { useNacigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const LocationManager = () => {
     const [location, setLocation] = useState(null);
     const [permissionStatus, setPermissionStatus] = useState(null);
     const mapsApiKey = "AIzaSyDylz4EXfCqB4riHXFWHsA2oiOnabLRx4M";
     const [windowWidth, setWindowWidth] = useState(Dimensions.get('window').width);    
-    const navigation = useNacigation();
+    const navigation = useNavigation();
 
     const verifyPermission = async () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
