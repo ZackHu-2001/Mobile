@@ -9,6 +9,8 @@ import { db, storage } from '../Firebase/firebaseSetup';
 import { getAuth } from 'firebase/auth';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytesResumable } from 'firebase/storage';
+import * as Notifications from "expo-notifications";
+import Constants from 'expo-constants';
 
 export default function Home({ route, navigation }) {
     const appName = 'Summer 2024 class';
@@ -60,37 +62,56 @@ export default function Home({ route, navigation }) {
         const auth = getAuth();
         const currentUser = auth.currentUser;
 
-        if (currentUser) {
-            // const goalsQuery = query(
-            //     collection(database, "goals"),
-            //     where("owner", "==", currentUser.uid)
-            // );
-            const q = query(
-                collection(db, 'goals'),
-                where('owner', '==', auth.currentUser.uid)
-            );
-
-            const unsubscribe = onSnapshot(q,
-                (querySnapshot) => {
-                    const newArray = [];
-                    if (!querySnapshot.empty) {
-                        querySnapshot.forEach((doc) => {
-                            newArray.push({ id: doc.id, ...doc.data() });
-                        });
-                        setGoals(newArray);
-                    } else {
-                        setGoals([]); // Clear the goals if the snapshot is empty
-                    }
-                },
-                (error) => {
-                    console.error('Error reading goals: ', error);
+        async function getPushToken() {
+            try {
+                if (Platform.OS === "android") {
+                    await Notifications.setNotificationChannelAsync("default", {
+                        name: "default",
+                        importance: Notifications.AndroidImportance.MAX,
+                    });
                 }
-            );
 
-            // Cleanup subscription on unmount
-            return () => unsubscribe();
+                verifyPermissions();
+                const tokenData = await Notifications.getExpoPushTokenAsync({
+                    projectId: Constants.expoConfig.extra.eas.projectId
+                });
+                console.log(tokenData.data);
+            } catch (error) {
+                console.log(error);
+            }
         }
-    }, []);
+
+            if (currentUser) {
+                // const goalsQuery = query(
+                //     collection(database, "goals"),
+                //     where("owner", "==", currentUser.uid)
+                // );
+                const q = query(
+                    collection(db, 'goals'),
+                    where('owner', '==', auth.currentUser.uid)
+                );
+
+                const unsubscribe = onSnapshot(q,
+                    (querySnapshot) => {
+                        const newArray = [];
+                        if (!querySnapshot.empty) {
+                            querySnapshot.forEach((doc) => {
+                                newArray.push({ id: doc.id, ...doc.data() });
+                            });
+                            setGoals(newArray);
+                        } else {
+                            setGoals([]); // Clear the goals if the snapshot is empty
+                        }
+                    },
+                    (error) => {
+                        console.error('Error reading goals: ', error);
+                    }
+                );
+
+                // Cleanup subscription on unmount
+                return () => unsubscribe();
+            }
+        }, []);
 
     // useEffect(() => {
     //     const q = query(

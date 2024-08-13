@@ -1,15 +1,16 @@
 import { Button, View, StyleSheet } from 'react-native';
 import * as Notifications from "expo-notifications";
 
-const NotificationManager = () => {
-    const verifyPermission = async () => {
-        const { status } = await Notifications.getPermissionsAsync();
-        if (status !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            return status === 'granted';
-        }
-        return true;
+export const verifyPermission = async () => {
+    const { status } = await Notifications.getPermissionsAsync();
+    if (status !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        return status === 'granted';
     }
+    return true;
+}
+
+const NotificationManager = () => {
 
     const scheduleNotificationHandler = async () => {
         if (!verifyPermission()) return;
