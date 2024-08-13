@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Button, Image } from "react-native";
 import * as Location from "expo-location";
 import { auth } from "../Firebase/firebaseSetup";
 import LocationManager from "./LocationManager";
+import NotificationManager from "./NotificationManager";
 
 export default function Profile() {
 
@@ -20,6 +21,7 @@ export default function Profile() {
                     <Text>No user is currently logged in.</Text>
                 )}
             </View>
+            <NotificationManager />
         </View>
     );
 }
