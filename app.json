@@ -12,13 +12,20 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.zackhu2001.Mobile"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.zackhu2001.Mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,9 +34,15 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "The app needs access to your camera."
+          "cameraPermission": "The app needs access to your camera.",
+          "photoPermission": "The app needs access to your gallery."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "62012c36-d519-4ace-b8dc-3400a120748e"
+      }
+    }
   }
 }
