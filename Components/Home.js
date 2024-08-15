@@ -11,6 +11,8 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytesResumable } from 'firebase/storage';
 import * as Notifications from "expo-notifications";
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
+import { verifyPermission } from './NotificationManager';
 
 export default function Home({ route, navigation }) {
     const appName = 'Summer 2024 class';
@@ -71,7 +73,7 @@ export default function Home({ route, navigation }) {
                     });
                 }
 
-                verifyPermissions();
+                verifyPermission();
                 const tokenData = await Notifications.getExpoPushTokenAsync({
                     projectId: Constants.expoConfig.extra.eas.projectId
                 });
@@ -80,69 +82,38 @@ export default function Home({ route, navigation }) {
                 console.log(error);
             }
         }
+        getPushToken();
+        if (currentUser) {
+            // const goalsQuery = query(
+            //     collection(database, "goals"),
+            //     where("owner", "==", currentUser.uid)
+            // );
+            const q = query(
+                collection(db, 'goals'),
+                where('owner', '==', auth.currentUser.uid)
+            );
 
-            if (currentUser) {
-                // const goalsQuery = query(
-                //     collection(database, "goals"),
-                //     where("owner", "==", currentUser.uid)
-                // );
-                const q = query(
-                    collection(db, 'goals'),
-                    where('owner', '==', auth.currentUser.uid)
-                );
-
-                const unsubscribe = onSnapshot(q,
-                    (querySnapshot) => {
-                        const newArray = [];
-                        if (!querySnapshot.empty) {
-                            querySnapshot.forEach((doc) => {
-                                newArray.push({ id: doc.id, ...doc.data() });
-                            });
-                            setGoals(newArray);
-                        } else {
-                            setGoals([]); // Clear the goals if the snapshot is empty
-                        }
-                    },
-                    (error) => {
-                        console.error('Error reading goals: ', error);
+            const unsubscribe = onSnapshot(q,
+                (querySnapshot) => {
+                    const newArray = [];
+                    if (!querySnapshot.empty) {
+                        querySnapshot.forEach((doc) => {
+                            newArray.push({ id: doc.id, ...doc.data() });
+                        });
+                        setGoals(newArray);
+                    } else {
+                        setGoals([]); // Clear the goals if the snapshot is empty
                     }
-                );
+                },
+                (error) => {
+                    console.error('Error reading goals: ', error);
+                }
+            );
 
-                // Cleanup subscription on unmount
-                return () => unsubscribe();
-            }
-        }, []);
-
-    // useEffect(() => {
-    //     const q = query(
-    //         collection(db, 'goals'),
-    //         where('owner', '==', auth.currentUser.uid)
-    //     );
-    //     // const q = query(collection(db, "goals"), where("owner", "==", auth.currentUser.uid));
-    //     const unsubscribe = onSnapshot(
-    //         q,
-    //     (querySnapshot) => {
-    //         let newArray = [];
-    //         if (!querySnapshot.empty) {
-    //             querySnapshot.forEach((doc) => {
-    //                 newArray.push({ id: doc.id, ...doc.data() });
-    //             });
-    //             setGoals(newArray);
-    //         }
-    //     });
-    //     // const unsubscribe = onSnapshot(collection(db, "goals"), (querySnapshot) => {
-    //     //     const goals = [];
-    //     //     querySnapshot.forEach((doc) => {
-    //     //         goals.push({
-    //     //             id: doc.id,
-    //     //             text: doc.data().goal
-    //     //         })
-    //     //     });
-    //     //     setGoals(goals);
-    //     // })
-
-    //     return () => unsubscribe();
-    // }, [])
+            // Cleanup subscription on unmount
+            return () => unsubscribe();
+        }
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -164,6 +135,22 @@ export default function Home({ route, navigation }) {
                 }}>
                 </FlatList>
             </View>
+            <Button onPress={() => {
+                const sendNotification = async () => {
+                    fetch("https://exp.host/--/api/v2/push/send", {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            to: "ExponentPushToken[2OHqa7PqYB0eL_ZsXW5JX_]",
+                            title: "Push Notification",
+                            body: "This is a push notification",
+                        })
+                    });
+                }
+                sendNotification();
+            }} title='send notification'></Button>
             <StatusBar style="auto" />
         </SafeAreaView>
     );
