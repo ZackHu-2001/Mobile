@@ -1,9 +1,25 @@
-import React, { useState, useLayoutEffect } from 'react';
-import { Button, Text, View, StyleSheet } from 'react-native';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
+import { Button, Text, View, StyleSheet, Image } from 'react-native';
+import { updateIswarning } from '../Firebase/firestoreHelper';
+import GoalUser from './GoalUser';
+import { storage } from '../Firebase/firebaseSetup';
+import { getDownloadURL, ref } from "firebase/storage";
+
 
 const GoalDetails = ({ route, navigation }) => {
     const goalObj = route.params?.goalObj;
     const [isWarning, setIsWarning] = useState(false);
+    const [imageUri, setImageUri] = useState('');
+
+    useEffect(() => {
+        const getImageUrl = async () => {
+            const reference = ref(storage, goalObj.imageUri);
+            const url = await getDownloadURL(reference);
+            setImageUri(url);
+        }
+        setIsWarning(route.params?.goalObj.isWarning);
+        getImageUrl();
+    }, [route])
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -19,7 +35,9 @@ const GoalDetails = ({ route, navigation }) => {
     }, [navigation, isWarning]);
 
     const handlePress = () => {
-        setIsWarning(true);
+        setIsWarning(!isWarning);
+        goalObj.isWarning = !isWarning;
+        updateIswarning(goalObj.isWarning);
     };
 
     return (
@@ -34,6 +52,14 @@ const GoalDetails = ({ route, navigation }) => {
                     <Text>More Detail</Text>
                 </View>
             )}
+            <GoalUser id={goalObj.id} />
+            {
+                imageUri && <Image style={{ width: 200, height: 200 }}
+                    source={{
+                        uri: imageUri
+                    }} />
+            }
+            
             <Button title="More Details" onPress={() => navigation.push('GoalDetails', { goalObj })} />
         </>
     );
